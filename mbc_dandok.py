@@ -8,10 +8,11 @@ import json
 # https://imnews.imbc.com/more/search/?search_kwd=단독#page=0
 kwd = '단독'
 page = 0
-page_size = 1000
-base_url = f'https://searchapi.imnews.imbc.com/search?callback=search_202110052313&query={kwd}&page={page}&pagesize={page_size}&sorttype=date'\
-     + '&startdate=20201005&enddate=20211005'\
-          + '&news_type=NE'
+page_size = 700
+base_url = f'https://searchapi.imnews.imbc.com/search?callback=search_202110062309&query={kwd}&page={page}&pagesize={page_size}&sorttype=date'\
+     + '&startdate=20201006&enddate=20211006'\
+          + '&news_type=PR'
+print(base_url)
 
 
 # json 파일 파싱
@@ -28,10 +29,10 @@ result_dates = []
 result_links = []
 
 
+
 for article in articles:
     if '[단독]' in article['fields']['artsubject']\
-         or '[단독]' in article['fields']['adf_bcont']\
-             or '단독 인터뷰' in article['fields']['adf_bcont']:
+         and '뉴스데스크' in article['fields']['catnm']:
         # print(article['fields']['artsubject'])
 
         link = 'https://imnews.imbc.com' + article['fields']['linkurl']
@@ -39,6 +40,7 @@ for article in articles:
         result_descs.append(article['fields']['adf_bcont'])
         result_dates.append(article['fields']['operday'][:-6])
         result_links.append(link)
+        # result_links.append(f'=HYPERLINK("{link}","링크")')
 
     
 # dataframe화
@@ -50,4 +52,4 @@ news_list = pd.DataFrame({
 })
 
 # csv로 저장
-news_list.to_csv('./data/mbc단독뉴스.csv', encoding='utf-8-sig')
+news_list.to_csv('./data/mbc단독뉴스.csv', encoding='utf-8-sig', header=None)
